@@ -58,6 +58,24 @@ void		print_solution(int ac, t_env *e)
 		ft_putchar('\n');
 }
 
+/*void		error_free_and_exit(t_env *e, char *line)
+{
+	if (line)
+		ft_strdel(&line);
+	if (e->map)
+	{
+		while (e->map[e->yx[0]--])
+		{
+			printf("free e->map[%d]\n", e->yx[0]);
+			free(e->map[e->yx[0]]);
+			printf("try to print map 0 0 [%d]\n", e->map[e->yx[0]][0]);
+		}
+		free(e->map);
+		e->map = NULL;
+	}
+	return (ft_putendl("map error"));
+}*/
+
 void        bsq(int ac, int fd)
 {
     t_env   e;
@@ -89,8 +107,7 @@ void        bsq(int ac, int fd)
             if (i == 0 || x == 0)
                 e.map[i][x] = (line[x] == e.sy[0]) ? 1 : 0;
             else if (i > 0 && x > 0)
-                e.map[i][x] = (line[x] == e.sy[1]) ? 0 :
-					ret_min(e.map[i][x - 1], e.map[i - 1][x - 1], e.map[i - 1][x]) + 1;
+                e.map[i][x] = (line[x] == e.sy[1]) ? 0 : ret_min(e.map[i][x - 1], e.map[i - 1][x - 1], e.map[i - 1][x]) + 1;
             if (e.map[i][x] > e.fp[2] && line[x] != e.sy[1])
 				new_sq_init(e.fp, i, x, e.map[i][x]);
         }
@@ -98,6 +115,9 @@ void        bsq(int ac, int fd)
     }
     close(fd);
 	print_solution(ac, &e);
+	//printf("%s\n", line);
+	//error_free_and_exit(&e, line);
+	//printf("%s\n", line);
 }
 
 int     main(int ac, char **av)
@@ -105,5 +125,7 @@ int     main(int ac, char **av)
     if (ac > 1 && *av++)
         while (ac-- > 1)
            bsq(ac, open(*av++, O_RDONLY));
+	else
+		bsq(ac, 0);
     return (0);
 }
